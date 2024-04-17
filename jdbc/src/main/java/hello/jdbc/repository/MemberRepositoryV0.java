@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -55,6 +57,30 @@ public class MemberRepositoryV0 {
                 throw new NoSuchElementException("member not found memberId = " + memberId);
             }
 
+        } catch (SQLException e) {
+            log.error("db error", e);
+            throw e;
+        } finally {
+            close(con, pstmt, rs);
+        }
+    }
+
+    public List<Member> findAll() throws SQLException {
+        String sql = "select * from member";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            List<Member> list = new ArrayList<Member>();
+            while (rs.next()) {
+                list.add(new Member(rs.getString("member_id"), rs.getInt("money")));
+            }
+            return list;
         } catch (SQLException e) {
             log.error("db error", e);
             throw e;

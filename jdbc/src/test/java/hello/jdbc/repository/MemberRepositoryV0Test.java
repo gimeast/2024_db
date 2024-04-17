@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -19,13 +20,18 @@ class MemberRepositoryV0Test {
     @Test
     void crud () throws SQLException {
         //생성
-        Member member = new Member("memberV1", 10000);
+        Member member = new Member("memberV4", 10000);
         repository.save(member);
 
         //조회
         Member findMember = repository.findById(member.getMemberId());
         log.info("findMember: {}", findMember);
         assertThat(findMember).isEqualTo(member);
+
+        //전체조회
+        List<Member> members = repository.findAll();
+        log.info("members: {}", members);
+        assertThat(members).hasSize(4);
 
         //수정
         repository.update(findMember.getMemberId(), 50000);
