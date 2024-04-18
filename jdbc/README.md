@@ -59,7 +59,7 @@ __데이터베이스 커넥션을 매번 획득__
 ```
 
 ## DataSource 이해
-커넥션을 획득하는 방법은 크게 DBCP2, Hikari CP, DriverManager DataSource가 있다.
+커넥션을 획득하는 방법은 크게 DBCP2, Hikari CP, DriverManager DataSource(스프링 제공)가 있다.
 ```
 만약 DriverManager에서 Hikari CP로 변경을 한다면 사용법이 달라질 것이다.
 이런 문제를 해결하기 위해 DataSource라는 인터페이스를 제공하며
