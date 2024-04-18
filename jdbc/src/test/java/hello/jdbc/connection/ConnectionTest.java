@@ -1,5 +1,6 @@
 package hello.jdbc.connection;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,21 @@ public class ConnectionTest {
         log.info("connection = {}, class={}", con1, con1.getClass());
         log.info("connection = {}, class={}", con2, con2.getClass());
     }
-    
+
+    @Test
+    @DisplayName("Hikari CP 사용")
+    void dataSourceConnectionPool() throws SQLException, InterruptedException {
+        //커넥션 풀링
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(URL);
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
+        dataSource.setMaximumPoolSize(10);
+        dataSource.setPoolName("MyPool");
+
+        useDataSource(dataSource);
+        Thread.sleep(1000);
+    }
 
 
 }
