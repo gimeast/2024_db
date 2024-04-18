@@ -57,3 +57,12 @@ __데이터베이스 커넥션을 매번 획득__
 대표적인 커넥션 풀 오픈소스는 commons-dbcp2, tomcat-jdbc pool, HikariCP 등이 있으며
 이제는 대부분 hikariCP를 사용하며 스프링부트 2.0부터는 기본 커넥션 풀로 hikariCP를 제공한다.
 ```
+
+## DataSource 이해
+커넥션을 획득하는 방법은 크게 DBCP2, Hikari CP, DriverManager DataSource가 있다.
+```
+만약 DriverManager에서 Hikari CP로 변경을 한다면 사용법이 달라질 것이다.
+이런 문제를 해결하기 위해 DataSource라는 인터페이스를 제공하며
+DataSource는 커넥션을 획득하는 방법을 추상화하는 인터페이스다.
+```
+
