@@ -137,6 +137,23 @@ public class MemberRepositoryV1 {
 
     }
 
+    public void deleteAll() throws SQLException {
+        String sql = "delete from member";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            log.error("db error", e);
+            throw e;
+        } finally {
+            close(con, pstmt, null);
+        }
+    }
 
 
 
