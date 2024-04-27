@@ -12,6 +12,7 @@ public class MemberServiceV1 {
     private final MemberRepositoryV1 memberRepository;
 
     public void accountTransfer(String from, String to, int amount) throws SQLException {
+        //트랜잭션 시작
         Member fromMember = memberRepository.findById(from);
         Member toMember = memberRepository.findById(to);
 
@@ -20,7 +21,7 @@ public class MemberServiceV1 {
         validation(toMember);
 
         memberRepository.update(to, toMember.getMoney() + amount);
-
+        //커밋 또는 롤백
 
     }
 
