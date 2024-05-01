@@ -7,36 +7,38 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 트랜잭션 - 트랜잭션 매니저
+ * 트랜잭션 - 트랜잭션 템플릿
  */
 @Slf4j
-@RequiredArgsConstructor
-public class MemberServiceV3_1 {
+public class MemberServiceV3_2 {
 
 //    private final DataSource dataSource;
-    private final PlatformTransactionManager transactionManager;
+//    private final PlatformTransactionManager transactionManager;
+    private final TransactionTemplate txTemplate;
     private final MemberRepositoryV3 memberRepository;
 
+    public MemberServiceV3_2(PlatformTransactionManager transactionManager, MemberRepositoryV3 memberRepository) {
+        this.txTemplate = new TransactionTemplate(transactionManager);
+        this.memberRepository = memberRepository;
+    }
+
     public void accountTransfer(String from, String to, int amount) throws SQLException {
-        //트랜잭션 시작
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-
-        try {
+        //해당 람다 로직은 밖으로 예외를 던질 수 없으므로
+        // Checked Exception을 RuntimeException으로 전환하여 예외를 밖으로 던질 수 있게 하였다.
+        txTemplate.executeWithoutResult((status) -> {
             //비즈니스 로직
-            accountTransferBizLogic(from, to, amount);
-            //성공시 커밋
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            //실패시 롤백
-            transactionManager.rollback(status);
-            throw new IllegalStateException(e);
-        }
-
+            try {
+                accountTransferBizLogic(from, to, amount);
+            } catch (SQLException e) {
+                throw new IllegalStateException(e);
+            }
+        });
     }
 
     private void accountTransferBizLogic(String from, String to, int amount) throws SQLException {
