@@ -217,8 +217,31 @@ __리소스 동기화__
 JDBC를 사용하면 DataSourceTransactionManager를 빈으로 등록하고 JPA를 사용하면 JpaTransactionManager를 등록해준다.
 ```
 
+## 트랜잭션 문제에 대한 최종 정리
+### 애플리케이션 구조
+- 프레젠테이션 계층
+  - @Controller(UI 관련 처리)
+- 서비스 계층
+  - @Service (비즈니스 로직)
+  - 가급적 특정 기술에 의존하지 않고, 순수 자바 코드로 작성하는게 좋다.
+- 데이터 접근 계층
+  - @Reoisutirt(DB 접근 처리)
+  - 주사용 기술: JDBC, JPA, File, Redis, Mongo ...
 
+```
+MemberServiceV1은 특정 기술에 종속적이지 않고 순수한 비즈니스 로직만 존재한다.
+V2에서는 트랜잭션을 적용하다 보니 JDBC 기술에 완전히 의존하게 되었다.
+V3에서는 이를 해결하기 위해 트랜잭션을 추상화 하였고 
+직접 커넥션을 받는 방법에서 DataSourceUtils를 이용하여 트랜잭션 동기화 매니저에 있는 커넥션을 받는방법을 이용하였다.
 
+V3_1에서 같은 패턴이 반복되는 부분이 해결되지는 않았다.
+예를 들어 try~catch, commit, rollback 같은 부분을 반복적으로 작성해야했다.
+V3_2에서 이를 해결하기위해 TransactionTemplate을 이용하였고 commit, rollback과 같은 부분을 작성 하지 않을수 있게 되었다.
+V3_3에서는 아직 해결하지 못한 try~catch 코드와 TransactionTemplate 실행 코드를 
+@Transactional을 선언하여 프록시에서 대신 트랜잭션 코드를 실행하도록 하였고 서비스단에서는 순수 비즈니스 로직만 있도록 해결하였다.
+
+스프링 부트를 사용하면 dataSource와 transactionManager는 자동으로 빈 등록을 해주어 코드 생략이 가능하다.
+```
 
 
 
@@ -245,3 +268,4 @@ JDBC를 사용하면 DataSourceTransactionManager를 빈으로 등록하고 JPA�
 4. @Transactional을 이용한 트랜잭션 처리
    - 스프링 빈으로 등록이 되어있어야 처리가 된다. 
    - 코드가 매우 깔끔해진다
+5. DataSource, TransactionManager bean 자동 등록
