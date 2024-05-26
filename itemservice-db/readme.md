@@ -38,3 +38,18 @@ __단점__
     - ```java
       SqlParameterSource param = new BeanPropertySqlParameterSource(item);
       ```
+      
+## JdbcTemplate 정리
+```
+실무에서 가장 간단하고 실용적인 방법으로 SQL을 사용하려면 JdbcTemplate을 사용하면 된다.
+JPA와 같은 ORM 기술을 사용하면 동시에 SQL을 직접 사용해야 할 때가 있는데 그때도 JdbcTemplate을 함께 사용하면 된다.
+그런데 JdbcTemplate의 최대 장점이있는데 바로 동적 쿼리 문제이다.
+그리고 SQL을 자바 코드로 작성하기 때문에 SQL라인이 코드로 넘어갈때마다 문자 더하기를 해야하는 단점도 있다.
+
+이러한 문제를 해결해주는 기술이 바로 MyBatis이다.
+참고로 JOOQ라는 기술도 동적쿼리 문제를 편리하게 해결해주지만 사용자가 많지 않고 설정도 까다롭다.
+```
+- 장점: 반복문제 해결
+- 단점: 동적쿼리 문제
+  
+  
