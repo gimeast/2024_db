@@ -68,14 +68,15 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
         SqlParameterSource param2 = new MapSqlParameterSource()
                 .addValue("itemName", updateParam.getItemName())
                 .addValue("price", updateParam.getPrice())
-                .addValue("quantity", updateParam.getQuantity());
+                .addValue("quantity", updateParam.getQuantity())
+                .addValue("id", itemId);
 
         jdbcTemplate.update(sql, param2);
     }
 
     @Override
     public Optional<Item> findById(Long id) {
-        String sql = "select * from item where id = :id";
+        String sql = "select id, item_name as itemName, price, quantity from item where id = :id";
 
         //queryForObject는 결과가 없으면 예외가 터진다.
         try {
@@ -98,7 +99,7 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 
         SqlParameterSource param4 = new BeanPropertySqlParameterSource(cond);
 
-        String sql = "select * from item";
+        String sql = "select id, item_name as itemName, price, quantity from item";
 
         //동적 쿼리
         if(StringUtils.hasText(itemName) || maxPrice != null) {

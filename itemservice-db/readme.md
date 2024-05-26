@@ -12,3 +12,29 @@ __장점__
 __단점__  
 - 동적 SQL을 해결하기 어렵다.
 
+## JdbcTemplate - 이름 지정 파라미터
+### 이름 지정 파라미터
+```
+이름 지정 파라미터는 key, value 형식으로 전달하면된다.
+바인딩에서 사용하는 파라미터 종류는 크게 3가지가 있다   
+```
+- Map
+  ```
+  Map<String, Object> param = Map.of("id", id);
+  Item item = template.queryForObject(sql, param, itemRowMapper());
+  ```
+- SqlParameterSource
+  - MapSqlParameterSource
+    - ```
+      SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("itemName", updateParam.getItemName())
+                .addValue("price", updateParam.getPrice())
+                .addValue("quantity", updateParam.getQuantity())
+                .addValue("id", itemId);
+      
+      jdbcTemplate.update(sql, param);
+      ```
+  - BeanPropertySqlParameterSource (제일 편하지만 MapSqlParameterSource의 예제는 Map이나 MapSqlParameterSource를 사용해야한다.)
+    - ```java
+      SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+      ```
