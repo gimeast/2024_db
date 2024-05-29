@@ -30,6 +30,7 @@ public class ItemServiceApplication {
 		return new TestDataInit(itemRepository);
 	}
 
+	/* application.properties에 데이터베이스 접근 설정을 하지않으면 빈 등록을 하지않아도 임베디드 모드를 사용할 수 있다.
 	@Bean
 	@Profile("test")
 	public DataSource dataSource() {
@@ -44,4 +45,5 @@ public class ItemServiceApplication {
 		dataSource.setPassword("");
 		return dataSource;
 	}
+	 */
 }
