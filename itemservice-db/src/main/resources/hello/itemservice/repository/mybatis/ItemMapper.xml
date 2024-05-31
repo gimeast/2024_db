@@ -12,8 +12,8 @@
         update item
         set
             item_name = #{updateParam.itemName},
-            price = #{price},
-            quantity = #{quantity}
+            price = #{updateParam.price},
+            quantity = #{updateParam.quantity}
         where id = #{id}
     </update>
 
@@ -32,7 +32,7 @@
             </if>
             <if test="maxPrice != null and maxPrice != ''">
             <![CDATA[
-                and price <= maxPrice
+                and price <= #{maxPrice}
             ]]>
             </if>
         </where>
