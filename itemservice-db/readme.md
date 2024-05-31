@@ -79,7 +79,13 @@ JVM안에서 메모리 모드로 동작하는 특별한 기능을 제공한다.
 - MyBatis는 동적쿼리를 편리하게 작성할 수 있다.
 - JdbcTemplate은 별도의 설정없이 사용했지만 MyBatis는 약간의 설정이 필요하다.
 
-
+```
+MyBatis 사용시 Mapper interface에 @Mapper 어노테이션을 선언한다.
+어노테이션을 선언하게되면 애플리케이션이 실행 될때 
+@Mapper가 붙은 인터페이스를 조회하여 프록시 객체를 생성하고
+생성된 구현체를 빈으로 등록 해준다.
+구현체는 MyBatis에서 발생한 예외를 DataAccessException으로 변환 해준다.
+```
 
 
 
