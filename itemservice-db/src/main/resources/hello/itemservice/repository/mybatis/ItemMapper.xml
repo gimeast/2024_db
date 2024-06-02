@@ -19,7 +19,7 @@
 
     <select id="findById" resultType="Item">
         select id, item_name, price, quantity
-        from item``
+        from item
         where id = #{id}
     </select>
 
