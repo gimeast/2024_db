@@ -87,8 +87,24 @@ MyBatis 사용시 Mapper interface에 @Mapper 어노테이션을 선언한다.
 구현체는 MyBatis에서 발생한 예외를 DataAccessException으로 변환 해준다.
 ```
 
-
-
+## JPA 적용3 - 예외 변환
+JPA의 경우 예외가 발생하면 JPA 예외가 발생하게 된다.
+- EntityManager는 순수한 JPA 기술이고 스프링과는 관계가 없다. 따라서 엔티티 매니저는 예외가 발생하면 JPA 관련 예외를 발생시킨다.
+- JPA는 PersistenceException과 그 하위 예외를 발생시킨다.
+  - 추가로 JPA는 IllegalStateException, IllegalArgumentException을 발생시킬 수 있다.
+- JPA 예외를 스프링 예외 추상화(DataAccessException)로 변환 시켜주는 비밀은 @Repository이다.
+  - @Repository의 기능은 컴포넌트 스캔의 대상이 되는것
+  - 예외 변환 AOP 적용대상이 되는것
+    - 스프링과 JPA를 함께 사용하는 경우 스프링은 JPA 예외 변환기(PersistenceExceptionTranslator)를 등록한다.
+    - 예외 변환 AOP 프록시는 JPA 관련 예외가 발생하면 JPA 예외 변환기를 통해 발생한 예외를 스프링 데이터 접근 예외로 변환한다.
+   
+  
+  
+  
+  
+  
+  
+  
 
 
 
