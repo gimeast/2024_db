@@ -6,11 +6,13 @@ import hello.itemservice.repository.ItemSearchCond;
 import hello.itemservice.repository.ItemUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @RequiredArgsConstructor
 @Repository
 public class JpaItemRepositoryV2 implements ItemRepository {
