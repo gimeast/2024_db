@@ -1,6 +1,7 @@
 package study.springtx.propagation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,5 +49,37 @@ public class BasicTxTest {
         log.info("트랜잭션 롤백 시작");
         transactionManager.rollback(status);
         log.info("트랜잭션 롤백 완료");
+    }
+
+    @Test
+    void double_commit() {
+        log.info("트랜잭션1 시작");
+        TransactionStatus tx1 = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("트랜잭션1 커밋");
+        transactionManager.commit(tx1);
+
+        log.info("트랜잭션2 시작");
+        TransactionStatus tx2 = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("트랜잭션2 커밋");
+        transactionManager.commit(tx2);
+
+    }
+
+    @Test
+    void double_commit_rollback() {
+        log.info("트랜잭션1 시작");
+        TransactionStatus tx1 = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("트랜잭션1 커밋");
+        transactionManager.commit(tx1);
+
+        log.info("트랜잭션2 시작");
+        TransactionStatus tx2 = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("트랜잭션2 롤백");
+        transactionManager.rollback(tx2);
+
     }
 }
