@@ -82,4 +82,30 @@ public class BasicTxTest {
         transactionManager.rollback(tx2);
 
     }
+
+    @Test
+    @DisplayName("외부 트랜잭션 수행중, 내부 트랜잭션 추가 수행 테스트")
+    void inner_commit() {
+        log.info("외부 트랜잭션 시작");
+        TransactionStatus outer = transactionManager.getTransaction(new DefaultTransactionAttribute());
+        log.info("outer.isNewTransaction() = {}", outer.isNewTransaction()); //DataSourceTransactionManager: Participating in existing transaction
+
+        inner();
+        
+        log.info("외부 트랜잭션 커밋");
+        transactionManager.commit(outer);
+
+        /*
+        결론: 트랜잭션이 전파된다. 내부 트랜잭션이 모두 커밋되야 커밋을 완료한다.
+        */
+    }
+
+    void inner() {
+        log.info("내부 트랜잭션 시작");
+        TransactionStatus inner = transactionManager.getTransaction(new DefaultTransactionAttribute());
+        log.info("inner.isNewTransaction() = {}", inner.isNewTransaction());
+
+        log.info("내부 트랜잭션 커밋");
+        transactionManager.commit(inner);
+    }
 }
