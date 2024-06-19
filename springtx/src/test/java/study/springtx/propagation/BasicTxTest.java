@@ -108,4 +108,22 @@ public class BasicTxTest {
         log.info("내부 트랜잭션 커밋");
         transactionManager.commit(inner);
     }
+
+
+    @Test
+    @DisplayName("외부 트랜잭션 롤백 테스트")
+    void outer_rollback() {
+        log.info("외부 트랜잭션 시작");
+        TransactionStatus outer = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        inner();
+
+        log.info("외부 트랜잭션 롤백");
+        transactionManager.rollback(outer);
+
+        /*
+        결론: 외부, 내부 전체 롤백된다.
+        */
+    }
+    
 }
