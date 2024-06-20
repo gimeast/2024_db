@@ -10,9 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 import javax.sql.DataSource;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -123,6 +127,29 @@ public class BasicTxTest {
 
         /*
         결론: 외부, 내부 전체 롤백된다.
+        */
+    }
+
+    @Test
+    @DisplayName("내부 트랜잭션 롤백 테스트")
+    void inner_rollback() {
+        log.info("외부 트랜잭션 시작");
+        TransactionStatus outer = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("내부 트랜잭션 시작");
+        TransactionStatus inner = transactionManager.getTransaction(new DefaultTransactionAttribute());
+
+        log.info("내부 트랜잭션 롤백");
+        transactionManager.rollback(inner);
+
+        log.info("외부 트랜잭션 커밋");
+        transactionManager.commit(outer);
+
+        assertThrows(UnexpectedRollbackException.class, () -> transactionManager.commit(outer));
+
+        /*
+        결론: 내부 트랜잭션 롤백시 물리트랜잭션을 롤백하지는 않고
+        기존 트랜잭션을 롤백 전용으로 표시한다. 그러므로 커밋이 되지않는다.
         */
     }
     
