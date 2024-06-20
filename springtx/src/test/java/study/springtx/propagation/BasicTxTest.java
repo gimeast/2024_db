@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
@@ -152,5 +153,35 @@ public class BasicTxTest {
         기존 트랜잭션을 롤백 전용으로 표시한다. 그러므로 커밋이 되지않는다.
         */
     }
-    
+
+    @Test
+    @DisplayName("내부 트랜잭션 REQUIRES_NEW 옵션 테스트")
+    void inner_rollback_requires_new() {
+        log.info("외부 트랜잭션 시작");
+        TransactionStatus outer = transactionManager.getTransaction(new DefaultTransactionAttribute());
+        log.info("outer.isNewTransaction() = {}", outer.isNewTransaction()); //true
+
+        innerRollbackLogic();
+
+        log.info("외부 트랜잭션 커밋");
+        transactionManager.commit(outer);
+
+        /*
+        결론: PROPAGATION_REQUIRES_NEW 옵션 설정으로 물리 트랜잭션이 2개가 되어 외부 트랜잭션 커밋이 정상적으로 된다.
+        */
+    }
+
+    private void innerRollbackLogic() {
+        DefaultTransactionAttribute definition = new DefaultTransactionAttribute();
+        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); //내부 트랜잭션을 만들지 않고 새로운 물리 트랜잭션을 만들기 위해 옵션을 설정하였다.
+
+        log.info("내부 트랜잭션 시작");
+        TransactionStatus inner = transactionManager.getTransaction(definition);
+
+        log.info("inner.isNewTransaction() = {}", inner.isNewTransaction()); //true
+
+        log.info("내부 트랜잭션 롤백");
+        transactionManager.rollback(inner);
+    }
+
 }
