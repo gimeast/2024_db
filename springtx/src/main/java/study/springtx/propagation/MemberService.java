@@ -24,7 +24,7 @@ public class MemberService {
         memberRepository.save(member);
         log.info("== memberRepository 호출 종료");
 
-        log.info("== logRepository 호출 종료");
+        log.info("== logRepository 호출 시작");
         logRepository.save(logMessage);
         log.info("== logRepository 호출 종료");
     }
@@ -43,7 +43,7 @@ public class MemberService {
         memberRepository.save(member);
         log.info("== memberRepository 호출 종료");
 
-        log.info("== logRepository 호출 종료");
+        log.info("== logRepository 호출 시작");
         try {
             logRepository.save(logMessage);
         } catch (RuntimeException e) {

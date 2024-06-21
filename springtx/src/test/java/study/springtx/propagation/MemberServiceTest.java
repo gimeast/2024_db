@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -30,7 +31,7 @@ class MemberServiceTest {
     @DisplayName("트랜잭션을 각각 실행하는 예제")
     void outerTxOff_success() {
         //given
-        String username = "test";
+        String username = "success";
 
         //when
         memberService.joinV1(username);
@@ -41,6 +42,28 @@ class MemberServiceTest {
 
         assertTrue(member.isPresent());
         assertTrue(logMessage.isPresent());
+    }
+
+    /**
+     * memberService    @Transactional:OFF
+     * memberRepository @Transactional:ON
+     * logRepository    @Transactional:ON RuntimeException
+     */
+    @Test
+    @DisplayName("트랜잭션을 각각 실행하는 예제")
+    void outerTxOff_fail() {
+        //given
+        String username = "로그예외";
+
+        //when
+        assertThrows(RuntimeException.class, () -> memberService.joinV1(username));
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        assertTrue(member.isPresent());
+        assertTrue(logMessage.isEmpty());
     }
 
 }
