@@ -66,4 +66,25 @@ class MemberServiceTest {
         assertTrue(logMessage.isEmpty());
     }
 
+    /**
+     * memberService    @Transactional:ON
+     * memberRepository @Transactional:OFF
+     * logRepository    @Transactional:OFF
+     */
+    @Test
+    @DisplayName("하나의 트랜잭션에서 실행하는 예제")
+    void singleTx() {
+        //given
+        String username = "success";
+
+        //when
+        memberService.joinV1Tx(username);
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        assertTrue(member.isPresent());
+        assertTrue(logMessage.isPresent());
+    }
 }

@@ -26,6 +26,16 @@ public class LogRepository {
         }
     }
 
+    public void saveNoTx(Log logMessage) {
+        log.info("save logMessage : {}", logMessage);
+        em.persist(logMessage);
+
+        if (logMessage.getMessage().contains("로그예외")) {
+            log.info("log 저장시 예외 발생");
+            throw new RuntimeException("예외 발생");
+        }
+    }
+
     public Optional<Log> find(String message) {
         return em.createQuery("select l from Log l where l.message = :message", Log.class)
                 .setParameter("message", message)
