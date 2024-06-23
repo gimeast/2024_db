@@ -53,8 +53,7 @@ public class InternalCallV2Test {
             log.info("call external method");
             printTxInfo();
 
-            //프록시를 거치지 않은 실제 대상객체(target)의 함수를 호출하면 트랜잭션이 적용되지 않는다.
-            //프록시를 사용하면 메서드 내부 호출에 프록시를 적용할 수 없다.
+            //대안: 외부 메서드를 호출하도록 하면 트랜잭션이 적용된다.
             internalService.internal();
         }
 
