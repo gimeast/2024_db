@@ -161,4 +161,28 @@ class MemberServiceTest {
         assertTrue(member.isEmpty());
         assertTrue(logMessage.isEmpty());
     }
+
+    /**
+     * memberService    @Transactional:ON
+     * memberRepository @Transactional:ON
+     * logRepository    @Transactional:ON(REQUIRES_NEW) Exception
+     */
+    @Test
+    @DisplayName("예외 복구 성공 예제")
+    void recoverException_success() {
+        //given
+        String username = "로그예외_recoverException_fail";
+
+        //when
+        memberService.joinV2Recover(username);
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        //회원 데이터는 저장되고
+        assertTrue(member.isPresent());
+        //로그 데이터는 롤백된다
+        assertTrue(logMessage.isEmpty());
+    }
 }

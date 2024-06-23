@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -27,6 +28,17 @@ public class LogRepository {
     }
 
     public void saveNoTx(Log logMessage) {
+        log.info("save logMessage : {}", logMessage);
+        em.persist(logMessage);
+
+        if (logMessage.getMessage().contains("로그예외")) {
+            log.info("log 저장시 예외 발생");
+            throw new RuntimeException("예외 발생");
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveRecover(Log logMessage) {
         log.info("save logMessage : {}", logMessage);
         em.persist(logMessage);
 
