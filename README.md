@@ -3,4 +3,4 @@
 
 ## 스프링 DB 2편 - 데이터 접근 활용 기술
 * [X] [itemservice-db](https://github.com/gimeast/2024_db/tree/main/itemservice-db)
-* [ ] [springtx](https://github.com/gimeast/2024_db/tree/main/springtx)
+* [X] [springtx](https://github.com/gimeast/2024_db/tree/main/springtx)
