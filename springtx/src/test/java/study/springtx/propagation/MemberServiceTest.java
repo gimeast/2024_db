@@ -31,7 +31,7 @@ class MemberServiceTest {
     @DisplayName("트랜잭션을 각각 실행하는 예제")
     void outerTxOff_success() {
         //given
-        String username = "success";
+        String username = "outerTxOff_success";
 
         //when
         memberService.joinV1(username);
@@ -50,7 +50,7 @@ class MemberServiceTest {
      * logRepository    @Transactional:ON RuntimeException
      */
     @Test
-    @DisplayName("트랜잭션을 각각 실행하는 예제")
+    @DisplayName("트랜잭션을 각각 실행하는 중 예외가 발생하는 예제")
     void outerTxOff_fail() {
         //given
         String username = "로그예외";
@@ -75,7 +75,7 @@ class MemberServiceTest {
     @DisplayName("하나의 트랜잭션에서 실행하는 예제")
     void singleTx() {
         //given
-        String username = "success";
+        String username = "singleTx";
 
         //when
         memberService.joinV1Tx(username);
@@ -86,5 +86,29 @@ class MemberServiceTest {
 
         assertTrue(member.isPresent());
         assertTrue(logMessage.isPresent());
+    }
+
+    /**
+     * memberService    @Transactional:ON
+     * memberRepository @Transactional:ON
+     * logRepository    @Transactional:ON
+     */
+    @Test
+    @DisplayName("트랜잭션 전파 예제 - default(REQUIRED)")
+    void txPropagation() {
+        //given
+        String username = "REQUIRED";
+
+        //when
+        memberService.joinV1TxPropagation(username);
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        assertTrue(member.isPresent());
+        assertTrue(logMessage.isPresent());
+
+
     }
 }

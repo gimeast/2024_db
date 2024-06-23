@@ -49,6 +49,24 @@ public class MemberService {
     }
 
     /**
+     * 트랜잭션 전파 - 기본옵션 REQUIRED
+     * @param username
+     */
+    @Transactional
+    public void joinV1TxPropagation(String username) {
+        Member member = new Member(username);
+        Log logMessage = new Log(username);
+
+        log.info("== memberRepository 호출 시작");
+        memberRepository.save(member);
+        log.info("== memberRepository 호출 종료");
+
+        log.info("== logRepository 호출 시작");
+        logRepository.save(logMessage);
+        log.info("== logRepository 호출 종료");
+    }
+
+    /**
      * 트랜잭션을 각각 사용하는 예제
      * 로그 저장시 예외가 발생하면 예외를 복구한다.
      * 별도의 트랜잭션을 설정하지 않았다.
