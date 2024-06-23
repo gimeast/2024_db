@@ -63,6 +63,7 @@ class MemberServiceTest {
         Optional<Log> logMessage = logRepository.find(username);
 
         assertTrue(member.isPresent());
+        //로그 데이터만 롤백된다
         assertTrue(logMessage.isEmpty());
     }
 
@@ -108,7 +109,28 @@ class MemberServiceTest {
 
         assertTrue(member.isPresent());
         assertTrue(logMessage.isPresent());
+    }
 
+    /**
+     * memberService    @Transactional:ON
+     * memberRepository @Transactional:ON
+     * logRepository    @Transactional:ON Exception
+     */
+    @Test
+    @DisplayName("트랜잭션 전파 예제 - default(REQUIRED)")
+    void txPropagationRollback() {
+        //given
+        String username = "REQUIRED_로그예외";
 
+        //when
+        assertThrows(RuntimeException.class, () -> memberService.joinV1TxPropagation(username));
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        //모든 데이터가 롤백된다.
+        assertTrue(member.isEmpty());
+        assertTrue(logMessage.isEmpty());
     }
 }
