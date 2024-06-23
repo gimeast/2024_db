@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.UnexpectedRollbackException;
 
 import java.util.Optional;
 
@@ -124,6 +125,33 @@ class MemberServiceTest {
 
         //when
         assertThrows(RuntimeException.class, () -> memberService.joinV1TxPropagation(username));
+
+        //then
+        Optional<Member> member = memberRepository.find(username);
+        Optional<Log> logMessage = logRepository.find(username);
+
+        //모든 데이터가 롤백된다.
+        assertTrue(member.isEmpty());
+        assertTrue(logMessage.isEmpty());
+    }
+
+    /**
+     * memberService    @Transactional:ON
+     * memberRepository @Transactional:ON
+     * logRepository    @Transactional:ON Exception
+     */
+    @Test
+    @DisplayName("예외 복구 실패 예제")
+    void recoverException_fail() {
+        //given
+        String username = "로그예외_recoverException_fail";
+
+        //when
+        assertThrows(UnexpectedRollbackException.class, () -> memberService.joinV2(username));
+        // UnexpectedRollbackException 발생한 이유는
+        // 논리 트랜잭션에서 예외가 발생하였고 이때 트랜잭션이 rollback-only 로 설정되었고
+        // 서비스단에서 try~catch로 예외를 잡아 정상흐름으로 돌려놨지만
+        // 물리 트랜잭션이 커밋을 호출하는 순간 rollback-only를 체크하여 UnexpectedRollbackException이 발생하게되었다.
 
         //then
         Optional<Member> member = memberRepository.find(username);
